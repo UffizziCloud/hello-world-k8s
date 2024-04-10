@@ -39,7 +39,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          context: ./
+          context: ./src/
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -87,7 +87,7 @@ jobs:
         uses: UffizziCloud/cluster-action@main
         with:
           cluster-name: pr-${{ github.event.pull_request.number }}-e2e-helm
-          server: https://app.uffizzi.com
+          server: https://app.qa.uffizzi.com/
 
       - name: Apply Kustomize to test the new image
         id: prev
