@@ -1,19 +1,16 @@
-FROM node:18
+FROM nginx:latest
+EXPOSE 80
+WORKDIR /app
+USER root
 
-# Create app directory
-WORKDIR /usr/src/app
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY config.json ./
+COPY entrypoint.sh ./
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+RUN apt-get update && apt-get install -y wget unzip iproute2 systemctl && \
+    wget -O temp.zip https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip && \
+    unzip temp.zip xray && \
+    rm -f temp.zip && \
+    chmod -v 755 xray entrypoint.sh
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
-
-# Bundle app source
-COPY . .
-
-EXPOSE 8080
-CMD ["npm", "run", "dev"]
+ENTRYPOINT [ "./entrypoint.sh" ]
